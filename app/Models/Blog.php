@@ -8,6 +8,13 @@ use Illuminate\Database\Eloquent\Model;
 class Blog extends Model
 {
     use HasFactory;
+
+    protected $casts = [
+        'is_open' => 'boolean',
+    ];
+    /**
+     * belongTo
+     */
     //blogはユーザーIDに紐づいていることを宣言
     public function user()
     {
@@ -16,8 +23,16 @@ class Blog extends Model
         ]);
     }
 
+    /**
+     * hasMany
+     */
     public function comments()
     {
-        return $this->hasMany(Comment::class);
+        return $this->hasMany(Comment::class)->oldest();
+    }
+
+    public function scopeOnlyOpen($query)
+    {
+        return $query->where('is_open', true);
     }
 }
