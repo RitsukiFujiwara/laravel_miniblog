@@ -17,20 +17,22 @@ class BlogController extends Controller
         return view('mypage.index', compact('blogs'));
     }
 
-    /**
-     * ユーザーをアプリケーションからログアウトさせる
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function logout(Request $request)
+    public function create()
     {
-        Auth::logout();
+        return view('mypage.blog.create');
+    }
 
-        $request->session()->invalidate();
+    public function store(Request $request)
+    {
+        $data = $request->validate([
+            'title' => ['required', 'string', 'max:255'],
+            'body' => ['required', 'string'],
+            'is_open' => ['nullable'],
+        ]);
 
-        $request->session()->regenerateToken();
+        $data['is_open'] = $request->boolean('is_open');
 
-        return redirect('mypage/login')->with('message', 'ログアウトしました');
+        $blog = $request->user()->blogs()->create($data);
+        dd($blog);
     }
 }
