@@ -33,6 +33,17 @@ class BlogController extends Controller
         $data['is_open'] = $request->boolean('is_open');
 
         $blog = $request->user()->blogs()->create($data);
-        dd($blog);
+
+        return redirect(route('mypage.blog.edit', $blog))->with('message', '新規登録しました');
+    }
+
+    public function edit(Blog $blog, Request $request)
+    {
+        //自分のブログに限定する
+        if ($request->user()->isNot($blog->user)) {
+            abort(403);
+        }
+        $data = old() ?: $blog;
+        return view('mypage.blog.edit', compact('data'));
     }
 }
