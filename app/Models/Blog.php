@@ -12,6 +12,8 @@ class Blog extends Model
     protected $casts = [
         'is_open' => 'boolean',
     ];
+
+    protected $guarded = [];
     /**
      * belongTo
      */
