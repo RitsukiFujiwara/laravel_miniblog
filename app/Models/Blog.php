@@ -14,6 +14,16 @@ class Blog extends Model
     ];
 
     protected $guarded = [];
+
+    protected static function booted()
+    {
+        static::deleting(function ($blog) {
+            // $blog->comments()->delete();
+            $blog->comments->each(function ($comment) {
+                $comment->delete();
+            });
+        });
+    }
     /**
      * belongTo
      */
