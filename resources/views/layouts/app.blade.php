@@ -11,9 +11,10 @@
     <nav>
         <ul>
             <li><a href="/">TOP [ブログ一覧]</a></li>
-
+            
             @auth
                 <li><a href="/mypage">マイブログ一覧</a></li>
+                <li>ようこそ{{ auth()->user()->name }}さん</li>
                 <li>
                     <form action="/mypage/logout" method="post">
                     @csrf

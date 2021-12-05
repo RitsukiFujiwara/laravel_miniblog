@@ -29,7 +29,7 @@ class DatabaseSeeder extends Seeder
         User::first()->update([
             'name' => 'テストユーザー',
             'email' => 'aaa@gmail.com',
-            'password' => bcrypt('aaaaaaaa'),
+            'password' => bcrypt('testtest'),
         ]);
     }
 }
