@@ -26,6 +26,9 @@ class BlogController extends Controller
     public function store(BlogSaveRequest $request)
     {
         $data = $request->validated();
+        if ($request->hasFile('pict')) {
+            $data['pict'] = $request->file('pict')->store('blogs', 'public');
+        }
 
         $blog = $request->user()->blogs()->create($data);
 
@@ -39,7 +42,7 @@ class BlogController extends Controller
             abort(403);
         }
         $data = old() ?: $blog;
-        return view('mypage.blog.edit', compact('data'));
+        return view('mypage.blog.edit', compact('blog', 'data'));
     }
 
     public function update(Blog $blog, BlogSaveRequest $request)
@@ -51,6 +54,12 @@ class BlogController extends Controller
         $data = $request->validated();
 
 
+        if ($request->hasFile('pict')) {
+            //古い画像の削除
+            $blog->deletePictFile();
+            $data['pict'] = $request->file('pict')->store('blogs', 'public');
+        }
+
         $blog->update($data);
 
         return redirect(route('mypage.blog.edit', $blog))->with('message', 'ブログを更新しました');
@@ -61,7 +70,7 @@ class BlogController extends Controller
         if ($request->user()->isNot($blog->user)) {
             abort(403);
         }
-        //付属するコメントについてはイベントを使用して削除します。
+        //画像と付属するコメントについてはイベントを使用して削除します。
         // Models/Blogを参照。
         // $blog->comments()->delete();
         $blog->delete();
